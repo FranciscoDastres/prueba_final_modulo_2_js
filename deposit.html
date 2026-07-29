@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es-CL">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Depositar dinero en la billetera" />
+    <title>Billetera | Depositar</title>
+    <link rel="icon" href="./assets/img/logoTD/js_logo.png" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+  </head>
+
+  <body class="app-page">
+    <main class="app-shell">
+      <section class="app-hero" aria-labelledby="deposit-title">
+        <div>
+          <img
+            class="brand-logo"
+            src="./assets/img/logoTD/js_logo.png"
+            alt="Logo Talento Digital JS"
+          />
+          <h1 id="deposit-title">Depositar dinero</h1>
+          <p>Incrementa el saldo disponible en tu billetera.</p>
+        </div>
+      </section>
+
+      <section class="app-panel" aria-labelledby="deposit-form-title">
+        <a href="menu.html" class="btn btn-outline-secondary mb-3">
+          ← Volver al menú
+        </a>
+        <p class="section-label">Depósito en CLP</p>
+        <h2 id="deposit-form-title">Realizar depósito</h2>
+
+        <div class="balance-card my-3">
+          <span>Saldo actual</span>
+          <strong id="saldo-deposito">$0</strong>
+        </div>
+
+        <div id="alert-container" aria-live="polite"></div>
+
+        <form id="deposit-form" novalidate>
+          <div class="mb-4">
+            <label class="form-label" for="monto-deposito">
+              Monto a depositar
+            </label>
+            <input
+              class="form-control form-control-lg"
+              id="monto-deposito"
+              type="number"
+              min="1"
+              step="1"
+              inputmode="numeric"
+              placeholder="Ej: 15000"
+              required
+            />
+            <div class="invalid-feedback">
+              Ingresa un monto entero mayor a cero.
+            </div>
+          </div>
+
+          <button class="btn btn-primary w-100 py-3" type="submit">
+            Realizar depósito
+          </button>
+        </form>
+
+        <p id="leyenda-deposito" class="text-success fw-semibold mt-3 d-none"></p>
+      </section>
+    </main>
+
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+    <script src="./assets/js/billetera.js"></script>
+    <script src="./assets/js/deposit.js"></script>
+  </body>
+</html>

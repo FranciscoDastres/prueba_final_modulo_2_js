@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="es-CL">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Enviar dinero a contactos guardados" />
+    <title>Billetera | Enviar dinero</title>
+    <link rel="icon" href="./assets/img/logoTD/js_logo.png" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+  </head>
+
+  <body class="app-page">
+    <main class="app-shell">
+      <section class="app-hero" aria-labelledby="send-title">
+        <div>
+          <img
+            class="brand-logo"
+            src="./assets/img/logoTD/js_logo.png"
+            alt="Logo Talento Digital JS"
+          />
+          <h1 id="send-title">Enviar dinero</h1>
+          <p>Selecciona un contacto y confirma el monto de la transferencia.</p>
+        </div>
+      </section>
+
+      <section class="app-panel" aria-labelledby="contacts-title">
+        <a href="menu.html" class="btn btn-outline-secondary mb-3">
+          ← Volver al menú
+        </a>
+        <p class="section-label">Contactos</p>
+        <h2 id="contacts-title">¿A quién enviarás?</h2>
+
+        <div class="balance-card my-3">
+          <span>Saldo disponible (CLP)</span>
+          <strong id="saldo-envio">$0</strong>
+        </div>
+
+        <form id="search-form" class="mb-3" role="search">
+          <label class="form-label" for="search-input">
+            Buscar en la agenda
+          </label>
+          <div class="input-group">
+            <input
+              class="form-control"
+              id="search-input"
+              type="search"
+              placeholder="Nombre o alias, ej: camila"
+              aria-label="Buscar contacto por nombre o alias"
+            />
+            <button class="btn btn-outline-primary" type="submit">
+              Buscar
+            </button>
+          </div>
+        </form>
+
+        <div id="lista-contactos" class="list-group contact-list"></div>
+
+        <div class="action-stack mt-3">
+          <button id="btn-agregar-contacto" class="btn btn-success" type="button">
+            + Agregar nuevo contacto
+          </button>
+          <button
+            id="btn-enviar-dinero"
+            class="btn btn-primary d-none"
+            type="button"
+            disabled
+          >
+            Enviar dinero
+          </button>
+        </div>
+
+        <div id="send-alert" class="mt-3" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <div
+      class="modal fade"
+      id="contact-modal"
+      tabindex="-1"
+      aria-labelledby="contact-modal-title"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="contact-modal-title">
+              Agregar nuevo contacto
+            </h2>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <form id="contact-form" novalidate>
+              <div id="contact-alert" aria-live="polite"></div>
+
+              <div class="mb-3">
+                <label class="form-label" for="nombre-contacto">
+                  Nombre y apellido
+                </label>
+                <input
+                  class="form-control"
+                  id="nombre-contacto"
+                  name="nombre"
+                  type="text"
+                  minlength="3"
+                  placeholder="Ej: Valentina Soto"
+                  required
+                />
+                <div class="invalid-feedback">Ingresa el nombre completo.</div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="cbu-contacto">
+                  Número de cuenta / CBU
+                </label>
+                <input
+                  class="form-control"
+                  id="cbu-contacto"
+                  name="cbu"
+                  type="text"
+                  inputmode="numeric"
+                  pattern="[0-9]{22}"
+                  minlength="22"
+                  maxlength="22"
+                  placeholder="Ej: 1234567890123456789012"
+                  required
+                />
+                <div class="invalid-feedback">Ingresa exactamente 22 dígitos.</div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="alias-contacto">Alias</label>
+                <input
+                  class="form-control"
+                  id="alias-contacto"
+                  name="alias"
+                  type="text"
+                  pattern="[A-Za-z0-9._\-]{3,30}"
+                  maxlength="30"
+                  placeholder="Ej: vale.soto"
+                  required
+                />
+                <div class="invalid-feedback">
+                  Usa entre 3 y 30 letras, números, puntos, guiones o guion bajo.
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="banco-contacto">
+                  Nombre del banco
+                </label>
+                <select class="form-select" id="banco-contacto" name="banco" required>
+                  <option value="" selected disabled>Selecciona un banco</option>
+                  <option>BancoEstado</option>
+                  <option>Banco de Chile</option>
+                  <option>Banco Santander Chile</option>
+                  <option>Banco BCI</option>
+                  <option>Scotiabank Chile</option>
+                  <option>Banco Itaú Chile</option>
+                  <option>Banco Falabella</option>
+                </select>
+                <div class="invalid-feedback">Selecciona un banco.</div>
+              </div>
+            </form>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">
+              Cancelar
+            </button>
+            <button class="btn btn-primary" type="submit" form="contact-form">
+              Guardar contacto
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="transfer-modal"
+      tabindex="-1"
+      aria-labelledby="transfer-modal-title"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="transfer-modal-title">
+              Confirmar envío
+            </h2>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <form id="transfer-form" novalidate>
+              <div id="transfer-alert" aria-live="polite"></div>
+              <div id="transfer-details" class="transfer-details mb-3"></div>
+
+              <label class="form-label" for="monto-envio">Monto a enviar</label>
+              <input
+                class="form-control"
+                id="monto-envio"
+                name="monto"
+                type="number"
+                min="1"
+                step="1"
+                inputmode="numeric"
+                placeholder="Ej: 10000"
+                required
+              />
+              <div class="invalid-feedback">
+                Ingresa un monto entero dentro de tu saldo disponible.
+              </div>
+            </form>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">
+              Cancelar
+            </button>
+            <button class="btn btn-success" type="submit" form="transfer-form">
+              Confirmar envío
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+    <script src="./assets/js/billetera.js"></script>
+    <script src="./assets/js/sendmoney.js"></script>
+  </body>
+</html>

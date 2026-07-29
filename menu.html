@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es-CL">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Menú principal de la billetera digital" />
+    <title>Billetera | Menú principal</title>
+    <link rel="icon" href="./assets/img/logoTD/js_logo.png" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+  </head>
+
+  <body class="app-page">
+    <main class="app-shell">
+      <section class="app-hero" aria-labelledby="menu-title">
+        <div>
+          <img
+            class="brand-logo"
+            src="./assets/img/logoTD/js_logo.png"
+            alt="Logo Talento Digital JS"
+          />
+          <h1 id="menu-title">Mi billetera</h1>
+          <p>Gestiona tus fondos y revisa tu actividad desde un solo lugar.</p>
+        </div>
+      </section>
+
+      <section class="app-panel" aria-labelledby="actions-title">
+        <p class="section-label">Menú principal</p>
+        <h2 id="actions-title">¿Qué deseas hacer?</h2>
+        <p class="text-secondary mb-3">Selecciona una operación.</p>
+
+        <div id="menu-alert" aria-live="polite"></div>
+
+        <div class="balance-card mb-4">
+          <span>Saldo disponible (CLP)</span>
+          <strong id="saldo-menu">$0</strong>
+        </div>
+
+        <div class="action-stack">
+          <button
+            id="btn-depositar"
+            class="btn btn-primary menu-action"
+            type="button"
+            data-nombre="depósitos"
+            data-ruta="deposit.html"
+          >
+            Depositar
+          </button>
+          <button
+            id="btn-enviar"
+            class="btn btn-primary menu-action"
+            type="button"
+            data-nombre="envío de dinero"
+            data-ruta="sendmoney.html"
+          >
+            Enviar dinero
+          </button>
+          <button
+            id="btn-movimientos"
+            class="btn btn-primary menu-action"
+            type="button"
+            data-nombre="últimos movimientos"
+            data-ruta="transactions.html"
+          >
+            Últimos movimientos
+          </button>
+        </div>
+
+        <hr class="my-4" />
+        <button id="btn-logout" class="btn btn-outline-danger w-100" type="button">
+          Cerrar sesión
+        </button>
+      </section>
+    </main>
+
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+    <script src="./assets/js/billetera.js"></script>
+    <script src="./assets/js/menu.js"></script>
+  </body>
+</html>

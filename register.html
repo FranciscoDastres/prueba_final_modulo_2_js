@@ -1,0 +1,101 @@
+name=register.html
+<!doctype html>
+<html lang="es-CL">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Billetera | Registro</title>
+    <link rel="icon" href="./assets/img/logoTD/js_logo.png" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+  </head>
+
+  <body class="app-page">
+    <main class="app-shell">
+      <section class="app-hero" aria-labelledby="register-title">
+        <div>
+          <img
+            class="brand-logo"
+            src="./assets/img/logoTD/js_logo.png"
+            alt="Logo"
+          />
+          <h1 id="register-title">Crea tu cuenta</h1>
+          <p>Regístrate para administrar tu billetera digital.</p>
+        </div>
+      </section>
+
+      <section class="app-panel" aria-labelledby="form-title">
+        <p class="section-label">Registro</p>
+        <h2 id="form-title">Crear cuenta</h2>
+
+        <div id="alert-container" aria-live="polite"></div>
+
+        <form id="registerForm" novalidate>
+          <div class="mb-3">
+            <label class="form-label" for="name">Nombre</label>
+            <input
+              class="form-control"
+              id="name"
+              name="name"
+              type="text"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="email">Correo electrónico</label>
+            <input
+              class="form-control"
+              id="email"
+              name="email"
+              type="email"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="password">Contraseña</label>
+            <input
+              class="form-control"
+              id="password"
+              name="password"
+              type="password"
+              required
+            />
+            <div class="form-text">Mínimo 6 caracteres.</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="confirmPassword"
+              >Confirmar contraseña</label
+            >
+            <input
+              class="form-control"
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              required
+            />
+          </div>
+
+          <button class="btn btn-primary w-100 py-3" type="submit">
+            Crear cuenta
+          </button>
+          <a class="d-block text-center mt-3" href="login.html"
+            >¿Ya tienes cuenta? Iniciar sesión</a
+          >
+        </form>
+      </section>
+    </main>
+
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="./assets/js/billetera.js"></script>
+    <script src="./assets/js/register.js"></script>
+  </body>
+</html>
