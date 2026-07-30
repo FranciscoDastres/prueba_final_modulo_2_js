@@ -46,11 +46,12 @@
             Buscar en la agenda
           </label>
           <div class="input-group">
+            <span class="input-group-text">🔍</span>
             <input
               class="form-control"
               id="search-input"
               type="search"
-              placeholder="Nombre o alias, ej: camila"
+              placeholder="Nombre o alias..."
               aria-label="Buscar contacto por nombre o alias"
             />
             <button class="btn btn-outline-primary" type="submit">
@@ -62,7 +63,11 @@
         <div id="lista-contactos" class="list-group contact-list"></div>
 
         <div class="action-stack mt-3">
-          <button id="btn-agregar-contacto" class="btn btn-success" type="button">
+          <button
+            id="btn-agregar-contacto"
+            class="btn btn-success"
+            type="button"
+          >
             + Agregar nuevo contacto
           </button>
           <button
@@ -79,6 +84,7 @@
       </section>
     </main>
 
+    <!-- MODAL AGREGAR CONTACTO -->
     <div
       class="modal fade"
       id="contact-modal"
@@ -122,7 +128,7 @@
 
               <div class="mb-3">
                 <label class="form-label" for="cbu-contacto">
-                  Número de cuenta / CBU
+                  Número de cuenta
                 </label>
                 <input
                   class="form-control"
@@ -130,13 +136,17 @@
                   name="cbu"
                   type="text"
                   inputmode="numeric"
-                  pattern="[0-9]{22}"
-                  minlength="22"
-                  maxlength="22"
-                  placeholder="Ej: 1234567890123456789012"
+                  minlength="12"
+                  maxlength="12"
+                  placeholder="Ej: 777018080769"
                   required
                 />
-                <div class="invalid-feedback">Ingresa exactamente 22 dígitos.</div>
+                <div class="form-text text-muted">
+                  Ingresa exactamente 12 dígitos numéricos.
+                </div>
+                <div class="invalid-feedback">
+                  El número de cuenta debe tener 12 dígitos.
+                </div>
               </div>
 
               <div class="mb-3">
@@ -146,22 +156,28 @@
                   id="alias-contacto"
                   name="alias"
                   type="text"
-                  pattern="[A-Za-z0-9._\-]{3,30}"
-                  maxlength="30"
                   placeholder="Ej: vale.soto"
                   required
                 />
-                <div class="invalid-feedback">
-                  Usa entre 3 y 30 letras, números, puntos, guiones o guion bajo.
+                <div class="form-text text-muted">
+                  Ingresa un alias para identificar al contacto.
                 </div>
+                <div class="invalid-feedback">Ingresa un alias válido.</div>
               </div>
 
               <div class="mb-3">
                 <label class="form-label" for="banco-contacto">
                   Nombre del banco
                 </label>
-                <select class="form-select" id="banco-contacto" name="banco" required>
-                  <option value="" selected disabled>Selecciona un banco</option>
+                <select
+                  class="form-select"
+                  id="banco-contacto"
+                  name="banco"
+                  required
+                >
+                  <option value="" selected disabled>
+                    Selecciona un banco
+                  </option>
                   <option>BancoEstado</option>
                   <option>Banco de Chile</option>
                   <option>Banco Santander Chile</option>
@@ -176,7 +192,11 @@
           </div>
 
           <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">
+            <button
+              class="btn btn-secondary"
+              type="button"
+              data-bs-dismiss="modal"
+            >
               Cancelar
             </button>
             <button class="btn btn-primary" type="submit" form="contact-form">
@@ -187,6 +207,7 @@
       </div>
     </div>
 
+    <!-- MODAL TRANSFERENCIA -->
     <div
       class="modal fade"
       id="transfer-modal"
@@ -232,7 +253,11 @@
           </div>
 
           <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">
+            <button
+              class="btn btn-secondary"
+              type="button"
+              data-bs-dismiss="modal"
+            >
               Cancelar
             </button>
             <button class="btn btn-success" type="submit" form="transfer-form">
@@ -243,6 +268,7 @@
       </div>
     </div>
 
+    <!-- SCRIPTS EN ORDEN CORRECTO -->
     <script
       src="https://code.jquery.com/jquery-3.7.1.min.js"
       integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
