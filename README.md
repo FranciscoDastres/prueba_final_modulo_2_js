@@ -24,7 +24,7 @@ Alke Wallet es una aplicación web que permite a los usuarios administrar su din
 
 ## 📁 Estructura del proyecto
 
-````
+```
 prueba_final_modulo_2_js/
 │
 ├── assets/
@@ -51,7 +51,7 @@ prueba_final_modulo_2_js/
 ├── deposit.html
 ├── sendmoney.html
 └── transactions.html
-```── transactions.html # Últimos movimientos
+```
 
 ---
 
@@ -161,6 +161,25 @@ La aplicación está diseñada con **Bootstrap 5** y es completamente responsive
 ## 🔧 Instalación y ejecución
 
 1. **Clonar el repositorio**
-   ```bash
-   git clone https://github.com/FranciscoDastres/prueba_final_modulo_2_js
-````
+
+```bash
+git clone https://github.com/FranciscoDastres/prueba_final_modulo_2_js.git
+```
+
+2. **Abrir el proyecto**
+   - Navega hasta la carpeta del proyecto
+   - Abre `index.html` en tu navegador
+
+3. **¡Listo!** No se requieren dependencias adicionales ni servidor.
+
+---
+
+## 👨‍💻 Autor
+
+**Francisco Dastres** - [@FranciscoDastres](https://github.com/FranciscoDastres)
+
+---
+
+## 📌 Enlace al repositorio
+
+[https://github.com/FranciscoDastres/prueba_final_modulo_2_js](https://github.com/FranciscoDastres/prueba_final_modulo_2_js)
