@@ -1,147 +1,213 @@
-const CLAVES = {
-  saldo: "saldoBilletera",
-  contactos: "contactosBilletera",
-  movimientos: "movimientosBilletera",
-  sesion: "sesionBilletera",
-};
+// BILLETERA - Gestión de datos
+window.billetera = (() => {
+  // Claves para localStorage
+  const CLAVES = { USERS: "billetera.users", CURRENT: "billetera.currentUser" };
 
-const USUARIO_DEMO = {
-  email: "usuario@email.com",
-  password: "123456",
-};
+  // Leer datos de localStorage
+  const leer = (clave, defecto) => {
+    try {
+      const datos = localStorage.getItem(clave);
+      return datos ? JSON.parse(datos) : defecto;
+    } catch {
+      return defecto;
+    }
+  };
+  // Guardar datos en localStorage
+  const guardar = (clave, valor) =>
+    localStorage.setItem(clave, JSON.stringify(valor));
+  // Eliminar datos de localStorage
+  const eliminar = (clave) => localStorage.removeItem(clave);
 
-const SALDO_INICIAL = 50000;
-const CONTACTOS_INICIALES = [
-  {
-    id: "contacto-1",
-    nombre: "Ana García",
-    alias: "ana.garcia",
-    cbu: "1234567890123456789012",
-    banco: "BancoEstado",
-  },
-  {
-    id: "contacto-2",
-    nombre: "Carlos Pérez",
-    alias: "carlos.p",
-    cbu: "9876543210987654321098",
-    banco: "Banco de Chile",
-  },
-  {
-    id: "contacto-3",
-    nombre: "María López",
-    alias: "maria.l",
-    cbu: "4567890123456789012345",
-    banco: "Banco Santander Chile",
-  },
-];
+  // Obtener todos los usuarios
+  const getUsers = () => leer(CLAVES.USERS, []);
+  // Guardar lista de usuarios
+  const saveUsers = (usuarios) => guardar(CLAVES.USERS, usuarios);
+  // Buscar usuario por email
+  const findUser = (email) =>
+    getUsers().find((u) => u.email === email.toLowerCase());
 
-function iniciarSesion(email, password) {
-  const credencialesValidas =
-    email === USUARIO_DEMO.email && password === USUARIO_DEMO.password;
+  // Obtener usuario con sesión activa
+  const getCurrentUser = () => leer(CLAVES.CURRENT, null);
+  // Guardar usuario con sesión activa
+  const setCurrentUser = (usuario) => {
+    if (usuario) {
+      guardar(CLAVES.CURRENT, {
+        id: usuario.id,
+        email: usuario.email,
+        name: usuario.name,
+      });
+      sessionStorage.setItem("sesionBilletera", "activa");
+    } else {
+      eliminar(CLAVES.CURRENT);
+      sessionStorage.removeItem("sesionBilletera");
+    }
+  };
+  // Cerrar sesión
+  const logout = () => setCurrentUser(null);
 
-  if (credencialesValidas) {
-    sessionStorage.setItem(CLAVES.sesion, "activa");
-  }
+  // Codificar contraseña (demo)
+  const hashPassword = (password) => btoa(password);
 
-  return credencialesValidas;
-}
+  // Registrar nuevo usuario
+  const register = ({ name, email, password }) => {
+    email = email.toLowerCase().trim();
+    if (findUser(email)) throw new Error("El correo ya está registrado");
+    if (password.length < 6)
+      throw new Error("La contraseña debe tener al menos 6 caracteres");
 
-function protegerSesion() {
-  if (sessionStorage.getItem(CLAVES.sesion) !== "activa") {
-    window.location.replace("login.html");
-  }
-}
+    const nuevoUsuario = {
+      id: "user-" + Date.now(),
+      name: name.trim(),
+      email,
+      passwordHash: hashPassword(password),
+      saldo: 0,
+      contacts: [],
+      transactions: [],
+    };
 
-function cerrarSesion() {
-  sessionStorage.removeItem(CLAVES.sesion);
-}
-
-function mostrarAlerta($contenedor, mensaje, tipo = "info") {
-  $("<div>", {
-    class: "alert alert-" + tipo,
-    role: "alert",
-    text: mensaje,
-  }).appendTo($contenedor.empty());
-}
-
-function formatearDinero(monto) {
-  return "$" + monto.toLocaleString("es-CL");
-}
-
-function obtenerSaldo() {
-  const valorGuardado = localStorage.getItem(CLAVES.saldo);
-  const saldoGuardado = Number(valorGuardado);
-
-  if (valorGuardado === null || !Number.isFinite(saldoGuardado) || saldoGuardado < 0) {
-    guardarSaldo(SALDO_INICIAL);
-    return SALDO_INICIAL;
-  }
-
-  return saldoGuardado;
-}
-
-function guardarSaldo(saldo) {
-  localStorage.setItem(CLAVES.saldo, String(saldo));
-}
-
-function obtenerContactos() {
-  if (localStorage.getItem(CLAVES.contactos) === null) {
-    guardarContactos(CONTACTOS_INICIALES);
-  }
-
-  return JSON.parse(localStorage.getItem(CLAVES.contactos)).sort(function (a, b) {
-    return a.nombre.localeCompare(b.nombre, "es-CL");
-  });
-}
-
-function guardarContactos(contactos) {
-  localStorage.setItem(CLAVES.contactos, JSON.stringify(contactos));
-}
-
-function agregarContacto(nombre, cbu, alias, banco) {
-  const contactos = obtenerContactos();
-  const nuevoContacto = {
-    id: "contacto-" + Date.now(),
-    nombre,
-    cbu,
-    alias,
-    banco,
+    const usuarios = getUsers();
+    usuarios.push(nuevoUsuario);
+    saveUsers(usuarios);
+    setCurrentUser(nuevoUsuario);
+    return nuevoUsuario;
   };
 
-  contactos.push(nuevoContacto);
-  guardarContactos(contactos);
-  return nuevoContacto;
-}
+  // Iniciar sesión
+  const login = ({ email, password }) => {
+    email = email.toLowerCase().trim();
+    const usuario = findUser(email);
+    if (!usuario) return false;
+    if (hashPassword(password) !== usuario.passwordHash) return false;
+    setCurrentUser(usuario);
+    return true;
+  };
 
-function obtenerMovimientos() {
-  return JSON.parse(localStorage.getItem(CLAVES.movimientos) || "[]");
-}
+  // Verificar autenticación (redirige a login si no hay sesión)
+  const requireAuth = () => {
+    const tieneSesion = getCurrentUser() !== null;
+    const sessionActiva =
+      sessionStorage.getItem("sesionBilletera") === "activa";
+    if (!tieneSesion && !sessionActiva) {
+      window.location.href = "login.html";
+      return false;
+    }
+    return true;
+  };
 
-function registrarMovimiento(tipo, monto, descripcion) {
-  const movimientos = obtenerMovimientos();
-  movimientos.unshift({ tipo, monto, descripcion, fecha: new Date().toISOString() });
-  localStorage.setItem(CLAVES.movimientos, JSON.stringify(movimientos));
-}
+  // Obtener saldo de un usuario
+  const getSaldo = (email) => findUser(email)?.saldo || 0;
+  // Actualizar saldo de un usuario
+  const setSaldo = (email, monto) => {
+    const usuarios = getUsers();
+    const indice = usuarios.findIndex((u) => u.email === email);
+    if (indice === -1) throw new Error("Usuario no encontrado");
+    usuarios[indice].saldo = monto;
+    saveUsers(usuarios);
+  };
 
-function depositarDinero(monto) {
-  const nuevoSaldo = obtenerSaldo() + monto;
-  guardarSaldo(nuevoSaldo);
-  registrarMovimiento("deposito", monto, "Depósito en la billetera");
-  return nuevoSaldo;
-}
+  // Obtener contactos de un usuario
+  const getContacts = (email) => findUser(email)?.contacts || [];
+  // Agregar un contacto
+  const addContact = (email, contacto) => {
+    const usuarios = getUsers();
+    const indice = usuarios.findIndex((u) => u.email === email);
+    if (indice === -1) throw new Error("Usuario no encontrado");
 
-function transferirDinero(monto, contacto) {
-  const saldo = obtenerSaldo();
+    const nuevoContacto = {
+      id: "c-" + Date.now(),
+      nombre: contacto.nombre.trim(),
+      alias: contacto.alias.trim(),
+      cbu: contacto.cbu.trim(),
+      banco: contacto.banco.trim(),
+    };
 
-  if (!Number.isInteger(monto) || monto <= 0 || monto > saldo) {
-    return false;
-  }
+    usuarios[indice].contacts.push(nuevoContacto);
+    saveUsers(usuarios);
+    return nuevoContacto;
+  };
 
-  guardarSaldo(saldo - monto);
-  registrarMovimiento(
-    "transferencia",
-    monto,
-    "Transferencia a " + contacto.nombre + " · " + contacto.banco,
-  );
-  return true;
-}
+  // Obtener transacciones de un usuario
+  const getTransactions = (email) => findUser(email)?.transactions || [];
+  // Agregar una transacción
+  const addTransaction = (email, transaccion) => {
+    const usuarios = getUsers();
+    const indice = usuarios.findIndex((u) => u.email === email);
+    if (indice === -1) throw new Error("Usuario no encontrado");
+
+    usuarios[indice].transactions.unshift({
+      id: "tx-" + Date.now(),
+      ...transaccion,
+      fecha: new Date().toISOString(),
+    });
+    saveUsers(usuarios);
+  };
+
+  // Depositar dinero
+  const depositar = (email, monto) => {
+    if (monto <= 0) throw new Error("Monto inválido");
+    const nuevoSaldo = getSaldo(email) + monto;
+    setSaldo(email, nuevoSaldo);
+    addTransaction(email, {
+      tipo: "deposito",
+      monto,
+      descripcion: `Depósito de $${monto.toLocaleString("es-CL")}`,
+    });
+    return nuevoSaldo;
+  };
+
+  // Transferir dinero a un contacto
+  const transferir = (email, monto, contacto) => {
+    const saldoActual = getSaldo(email);
+    if (monto <= 0) throw new Error("Monto inválido");
+    if (monto > saldoActual) throw new Error("Saldo insuficiente");
+
+    const nuevoSaldo = saldoActual - monto;
+    setSaldo(email, nuevoSaldo);
+    addTransaction(email, {
+      tipo: "transferencia",
+      monto,
+      descripcion: `Transferencia a ${contacto.nombre} · ${contacto.banco}`,
+    });
+    return true;
+  };
+
+  // Recibir fondos (simulación)
+  const recibirFondos = (email, monto, desde = "Usuario externo") => {
+    if (monto <= 0) throw new Error("El monto debe ser positivo");
+    const nuevoSaldo = getSaldo(email) + monto;
+    setSaldo(email, nuevoSaldo);
+    addTransaction(email, {
+      tipo: "ingreso",
+      monto,
+      descripcion: `Transferencia recibida de ${desde}`,
+    });
+    return nuevoSaldo;
+  };
+
+  // Formatear dinero a pesos chilenos
+  const formatMoney = (monto) => "$" + Number(monto).toLocaleString("es-CL");
+
+  // Funciones disponibles para otros archivos
+  return {
+    getUsers,
+    saveUsers,
+    findUser,
+    register,
+    login,
+    logout,
+    getCurrentUser,
+    setCurrentUser,
+    requireAuth,
+    getSaldo,
+    setSaldo,
+    getContacts,
+    addContact,
+    getTransactions,
+    addTransaction,
+    depositar,
+    transferir,
+    recibirFondos,
+    hashPassword,
+    formatMoney,
+  };
+})();
