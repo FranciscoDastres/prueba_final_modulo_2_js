@@ -237,3 +237,55 @@ select {
     align-self: stretch;
   }
 }
+
+/* ============================================
+   ESTILOS PARA CONTACTOS
+   ============================================ */
+
+/* Contenedor de la lista de contactos */
+.contact-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Cada item de contacto */
+.contact-item {
+  cursor: pointer;
+  border-radius: 8px !important;
+  margin-bottom: 8px;
+  border: 1px solid #e9ecef !important;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.contact-item:hover:not(.active) {
+  background-color: #f8f9fa !important;
+  transform: translateX(5px);
+}
+
+.contact-item.active {
+  background-color: #e7f1ff !important;
+  border-color: #0d6efd !important;
+  border-width: 2px !important;
+  transform: translateX(5px);
+}
+
+/* Avatar de contacto */
+.contact-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Badge de CBU */
+.contact-cbu-badge {
+  font-size: 11px;
+}
