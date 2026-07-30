@@ -49,7 +49,7 @@
             data-nombre="depósitos"
             data-ruta="deposit.html"
           >
-            Depositar
+            💰 Depositar
           </button>
           <button
             id="btn-enviar"
@@ -58,7 +58,22 @@
             data-nombre="envío de dinero"
             data-ruta="sendmoney.html"
           >
-            Enviar dinero
+            📤 Enviar dinero
+          </button>
+          <button
+            id="btn-recibir"
+            class="btn btn-success menu-action"
+            type="button"
+          >
+            📥 Recibir dinero
+          </button>
+          <!-- 🆕 BOTÓN RETIRAR DINERO -->
+          <button
+            id="btn-retirar"
+            class="btn btn-warning menu-action"
+            type="button"
+          >
+            💳 Retirar dinero
           </button>
           <button
             id="btn-movimientos"
@@ -67,20 +82,206 @@
             data-nombre="últimos movimientos"
             data-ruta="transactions.html"
           >
-            Últimos movimientos
+            📊 Últimos movimientos
           </button>
         </div>
 
         <hr class="my-4" />
-        <button id="btn-logout" class="btn btn-outline-danger w-100" type="button">
+        <button
+          id="btn-logout"
+          class="btn btn-outline-danger w-100"
+          type="button"
+        >
           Cerrar sesión
         </button>
       </section>
     </main>
 
+    <!-- ========================================== -->
+    <!-- MODAL RECIBIR DINERO (SEPARADO)            -->
+    <!-- ========================================== -->
+    <div
+      class="modal fade"
+      id="receive-modal"
+      tabindex="-1"
+      aria-labelledby="receive-modal-title"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="receive-modal-title">
+              📥 Recibir dinero
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="receive-form">
+              <div id="receive-alert" aria-live="polite"></div>
+
+              <div class="mb-3">
+                <label class="form-label" for="monto-recibir">
+                  Monto a recibir (CLP)
+                </label>
+                <input
+                  class="form-control form-control-lg"
+                  id="monto-recibir"
+                  type="number"
+                  min="1"
+                  step="1"
+                  inputmode="numeric"
+                  placeholder="Ej: 15000"
+                  required
+                />
+                <div class="form-text text-muted">
+                  Ingresa un monto entero mayor a cero.
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="desde-recibir">
+                  ¿Quién te envió el dinero?
+                </label>
+                <input
+                  class="form-control"
+                  id="desde-recibir"
+                  type="text"
+                  placeholder="Ej: Ana García"
+                />
+                <div class="form-text text-muted">
+                  Opcional - Si no ingresas un nombre, aparecerá como "Usuario
+                  externo"
+                </div>
+              </div>
+
+              <button class="btn btn-success w-100 py-3" type="submit">
+                ✅ Confirmar recepción
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL RETIRAR DINERO (SEPARADO)            -->
+    <!-- ========================================== -->
+    <div
+      class="modal fade"
+      id="withdraw-modal"
+      tabindex="-1"
+      aria-labelledby="withdraw-modal-title"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="withdraw-modal-title">
+              💳 Retirar dinero
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="withdraw-form">
+              <div id="withdraw-alert" aria-live="polite"></div>
+
+              <div class="mb-3">
+                <label class="form-label" for="monto-retirar">
+                  Monto a retirar (CLP)
+                </label>
+                <input
+                  class="form-control form-control-lg"
+                  id="monto-retirar"
+                  type="number"
+                  min="1"
+                  step="1"
+                  inputmode="numeric"
+                  placeholder="Ej: 10000"
+                  required
+                />
+                <div class="form-text text-muted">
+                  Ingresa un monto entero mayor a cero.
+                </div>
+              </div>
+
+              <!-- 🆕 MONTOS RÁPIDOS PARA RETIRAR -->
+              <div class="mb-3">
+                <label class="form-label text-secondary">Montos rápidos:</label>
+                <div class="d-flex gap-2 flex-wrap">
+                  <button
+                    type="button"
+                    class="btn btn-outline-warning btn-sm monto-retiro-rapido"
+                    data-monto="5000"
+                  >
+                    $5.000
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-warning btn-sm monto-retiro-rapido"
+                    data-monto="10000"
+                  >
+                    $10.000
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-warning btn-sm monto-retiro-rapido"
+                    data-monto="20000"
+                  >
+                    $20.000
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-warning btn-sm monto-retiro-rapido"
+                    data-monto="50000"
+                  >
+                    $50.000
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-warning btn-sm monto-retiro-rapido"
+                    data-monto="100000"
+                  >
+                    $100.000
+                  </button>
+                </div>
+                <div class="form-text text-muted">
+                  Haz clic en un monto para seleccionarlo rápidamente.
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <span class="text-secondary">Saldo disponible:</span>
+                <strong id="saldo-retiro-disponible">$0</strong>
+              </div>
+
+              <button class="btn btn-warning w-100 py-3" type="submit">
+                ✅ Confirmar retiro
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script
       src="https://code.jquery.com/jquery-3.7.1.min.js"
       integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+    <!-- Bootstrap JS para modales -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
       crossorigin="anonymous"
     ></script>
     <script src="./assets/js/billetera.js"></script>
