@@ -24,28 +24,34 @@ Alke Wallet es una aplicación web que permite a los usuarios administrar su din
 
 ## 📁 Estructura del proyecto
 
-alke-wallet/
+````
+prueba_final_modulo_2_js/
+│
 ├── assets/
-│ ├── css/
-│ │ └── styles.css # Estilos personalizados
-│ ├── js/
-│ │ ├── billetera.js # Lógica principal (usuarios, saldo, transacciones)
-│ │ ├── login.js # Inicio de sesión
-│ │ ├── register.js # Registro de usuarios
-│ │ ├── menu.js # Menú principal
-│ │ ├── deposit.js # Depósitos
-│ │ ├── sendmoney.js # Envío de dinero
-│ │ └── transactions.js # Historial de transacciones
-│ └── img/
-│ └── logoTD/
-│ └── js_logo.png # Logo de la aplicación
-├── index.html # Página de entrada
-├── login.html # Iniciar sesión
-├── register.html # Registrarse
-├── menu.html # Menú principal
-├── deposit.html # Depositar dinero
-├── sendmoney.html # Enviar dinero
-└── transactions.html # Últimos movimientos
+│   ├── css/
+│   │   └── styles.css
+│   │
+│   ├── js/
+│   │   ├── billetera.js
+│   │   ├── login.js
+│   │   ├── register.js
+│   │   ├── menu.js
+│   │   ├── deposit.js
+│   │   ├── sendmoney.js
+│   │   └── transactions.js
+│   │
+│   └── img/
+│       └── logoTD/
+│           └── js_logo.png
+│
+├── index.html
+├── login.html
+├── register.html
+├── menu.html
+├── deposit.html
+├── sendmoney.html
+└── transactions.html
+```── transactions.html # Últimos movimientos
 
 ---
 
@@ -157,4 +163,4 @@ La aplicación está diseñada con **Bootstrap 5** y es completamente responsive
 1. **Clonar el repositorio**
    ```bash
    git clone https://github.com/FranciscoDastres/prueba_final_modulo_2_js
-   ```
+````
