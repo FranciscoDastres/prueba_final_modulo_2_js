@@ -1,81 +1,174 @@
-protegerSesion();
-
-const listaTransacciones = [
-  {
-    tipo: "compra",
-    monto: 12990,
-    descripcion: "Compra en supermercado (ejemplo)",
-    fecha: "2026-07-10T15:30:00.000Z",
-  },
-  {
-    tipo: "deposito",
-    monto: 25000,
-    descripcion: "Depósito de prueba (ejemplo)",
-    fecha: "2026-07-08T11:00:00.000Z",
-  },
-  {
-    tipo: "transferencia-recibida",
-    monto: 18000,
-    descripcion: "Transferencia recibida de Ana García (ejemplo)",
-    fecha: "2026-07-05T19:45:00.000Z",
-  },
-];
-
-const TIPOS_TRANSACCION = {
-  compra: "Compra",
-  deposito: "Depósito",
-  transferencia: "Transferencia enviada",
-  "transferencia-recibida": "Transferencia recibida",
-};
-
-function getTipoTransaccion(tipo) {
-  return TIPOS_TRANSACCION[tipo] || "Movimiento";
-}
-
-function esIngreso(tipo) {
-  return tipo === "deposito" || tipo === "transferencia-recibida";
-}
-
-function crearMovimiento(movimiento) {
-  const ingreso = esIngreso(movimiento.tipo);
-  const $datos = $("<span>").append(
-    $("<span>", {
-      class: "badge mb-1 " + (ingreso ? "text-bg-success" : "text-bg-secondary"),
-      text: getTipoTransaccion(movimiento.tipo),
-    }),
-    $("<strong>").text(movimiento.descripcion),
-    $("<small>").text(new Date(movimiento.fecha).toLocaleString("es-CL")),
-  );
-  const $monto = $("<strong>", {
-    class: ingreso ? "text-success" : "text-danger",
-    text: (ingreso ? "+" : "−") + formatearDinero(movimiento.monto),
-  });
-
-  return $("<li>", { class: "list-group-item transaction-item" }).append(
-    $datos,
-    $monto,
-  );
-}
-
-function mostrarUltimosMovimientos(filtro) {
-  const reales = obtenerMovimientos();
-  const movimientos = reales.length > 0 ? reales : listaTransacciones;
-  const filtrados = movimientos.filter(function (movimiento) {
-    return filtro === "todos" || movimiento.tipo === filtro;
-  });
-  const $lista = $("#lista-movimientos").empty();
-
-  $("#sin-movimientos").toggleClass("d-none", filtrados.length > 0);
-  filtrados.forEach(function (movimiento) {
-    $lista.append(crearMovimiento(movimiento));
-  });
-}
+// ============================================
+// ÚLTIMOS MOVIMIENTOS
+// ============================================
 
 $(function () {
+  // Verificar sesión
+  const usuario = billetera.getCurrentUser();
+  if (!usuario) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  // Elementos DOM
+  const $lista = $("#lista-movimientos");
+  const $saldo = $("#saldo-transacciones");
   const $filtro = $("#filtro-tipo");
-  $("#saldo-transacciones").text(formatearDinero(obtenerSaldo()));
+  const $sinMovimientos = $("#sin-movimientos");
+
+  // Actualizar saldo
+  const actualizarSaldo = () => {
+    $saldo.text(billetera.formatMoney(billetera.getSaldo(usuario.email)));
+  };
+
+  // ==========================================
+  // CONFIGURACIÓN DE TIPOS
+  // ==========================================
+
+  const tipos = {
+    deposito: "Depósito",
+    transferencia: "Transferencia enviada",
+    ingreso: "Transferencia recibida",
+    retiro: "Retiro",
+    compra: "Compra",
+    inicio: "Bienvenida",
+  };
+
+  const iconos = {
+    deposito: "💰",
+    transferencia: "💸",
+    ingreso: "📥",
+    retiro: "💳",
+    compra: "🛒",
+    inicio: "👋",
+  };
+
+  const colores = {
+    deposito: "success",
+    transferencia: "danger",
+    ingreso: "success",
+    retiro: "warning",
+    compra: "warning",
+    inicio: "secondary",
+  };
+
+  // ==========================================
+  // FUNCIONES DE APOYO
+  // ==========================================
+
+  const getTipo = (tipo) => tipos[tipo] || tipo;
+  const getIcon = (tipo) => iconos[tipo] || "🔄";
+  const getColor = (tipo) => colores[tipo] || "secondary";
+  const esIngreso = (tipo) => tipo === "deposito" || tipo === "ingreso";
+  const esEgreso = (tipo) => tipo === "transferencia" || tipo === "retiro";
+
+  // Formatear fecha
+  const formatearFecha = (fecha) => {
+    return new Date(fecha).toLocaleString("es-CL", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  // ==========================================
+  // CREAR ELEMENTO DE MOVIMIENTO
+  // ==========================================
+
+  const crearMovimiento = (movimiento) => {
+    const ingreso = esIngreso(movimiento.tipo);
+    const egreso = esEgreso(movimiento.tipo);
+    const tipoTexto = getTipo(movimiento.tipo);
+    const icono = getIcon(movimiento.tipo);
+    const color = getColor(movimiento.tipo);
+
+    const montoFormateado = ingreso
+      ? `+${billetera.formatMoney(movimiento.monto)}`
+      : egreso
+        ? `-${billetera.formatMoney(movimiento.monto)}`
+        : billetera.formatMoney(movimiento.monto);
+
+    const claseColor = ingreso
+      ? "text-success"
+      : egreso
+        ? "text-danger"
+        : "text-secondary";
+
+    const $li = $(`
+      <li class="list-group-item transaction-item p-3" style="border-radius: 8px; margin-bottom: 8px; border: 1px solid #e9ecef; transition: all 0.2s;">
+        <div class="d-flex align-items-center">
+          <div class="me-3" style="font-size: 24px;">${icono}</div>
+          <div class="flex-grow-1">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <span class="badge bg-${color} me-2">${tipoTexto}</span>
+                <strong>${movimiento.descripcion}</strong>
+              </div>
+              <strong class="${claseColor}">${montoFormateado}</strong>
+            </div>
+            <small class="text-secondary">${formatearFecha(movimiento.fecha)}</small>
+          </div>
+        </div>
+      </li>
+    `);
+
+    // Efectos hover
+    $li.on("mouseenter", function () {
+      $(this).css({
+        "background-color": "#f8f9fa",
+        transform: "translateX(5px)",
+      });
+    });
+
+    $li.on("mouseleave", function () {
+      $(this).css({ "background-color": "", transform: "" });
+    });
+
+    return $li;
+  };
+
+  // ==========================================
+  // MOSTRAR MOVIMIENTOS
+  // ==========================================
+
+  const mostrarMovimientos = (filtro = "todos") => {
+    const transacciones = billetera.getTransactions(usuario.email);
+    $lista.empty();
+
+    if (transacciones.length === 0) {
+      $sinMovimientos.removeClass("d-none");
+      return;
+    }
+
+    $sinMovimientos.addClass("d-none");
+
+    const filtrados =
+      filtro === "todos"
+        ? transacciones
+        : transacciones.filter((t) => t.tipo === filtro);
+
+    if (filtrados.length === 0) {
+      $lista.html(
+        `<p class="text-center text-muted p-3">No hay movimientos de este tipo</p>`,
+      );
+      return;
+    }
+
+    filtrados.forEach((movimiento) =>
+      $lista.append(crearMovimiento(movimiento)),
+    );
+  };
+
+  // ==========================================
+  // EVENTOS E INICIALIZAR
+  // ==========================================
+
   $filtro.on("change", function () {
-    mostrarUltimosMovimientos(String($(this).val()));
+    mostrarMovimientos($(this).val());
   });
-  mostrarUltimosMovimientos(String($filtro.val()));
+
+  actualizarSaldo();
+  mostrarMovimientos("todos");
 });
